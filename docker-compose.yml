@@ -3,9 +3,7 @@ version: '3.7'
 services:
   quetre:
     #image: quay.io/pussthecatorg/quetre:latest
-    build:
-    context: .
-    dockerfile: Dockerfile
+    build: .
     container_name: quetre
     hostname: quetre
     restart: always
