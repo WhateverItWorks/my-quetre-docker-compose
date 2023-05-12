@@ -1,0 +1,20 @@
+version: '3.7'
+
+services:
+  quetre:
+    #image: quay.io/pussthecatorg/quetre:latest
+    build:
+    context: .
+    dockerfile: Dockerfile
+    container_name: quetre
+    hostname: quetre
+    restart: always
+    ports:
+      - "127.0.0.1:3007:3007"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      - "NODE_ENV=production"
+      - "PORT=3007"
