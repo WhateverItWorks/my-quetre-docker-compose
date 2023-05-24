@@ -10,8 +10,6 @@ services:
     ports:
       - "127.0.0.1:3007:3007"
     env_file: .env
-    user: 65534:65534
-    read_only: true
     security_opt:
       - no-new-privileges:true
     cap_drop:
