@@ -1,7 +1,5 @@
 # Quetre
 
-[![Delightful Humane Tech](https://codeberg.org/teaserbot-labs/delightful-humane-design/raw/branch/main/humane-tech-badge.svg)](https://codeberg.org/teaserbot-labs/delightful-humane-design)
-
 Quetre is an alternative front-end to Quora.
 It enables you to see answers without ads, trackers, and other such bloat.
 
