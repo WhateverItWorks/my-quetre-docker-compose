@@ -1,4 +1,4 @@
-FROM node:lts-bullseye
+FROM node:latest
 WORKDIR /app
 RUN apt update -y && apt upgrade -y \
     && apt install -y --no-install-recommends git \
