@@ -2,7 +2,6 @@ version: '3.7'
 
 services:
   quetre:
-    #image: quay.io/pussthecatorg/quetre:latest
     build: .
     container_name: quetre
     hostname: quetre
@@ -19,11 +18,9 @@ services:
       - "PORT=3007"
 
   quetre-redis:
-    container_name: quetre_redis
-    image: redis
-    # FOR DEBUGGING ONLY
-    # ports:
-    #   - "6379:6379"
+    container_name: quetre-redis
+    hostname: quetre-redis
+    image: redis:latest
     restart: always
     user: nobody
     read_only: true
