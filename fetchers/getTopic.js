@@ -2,21 +2,18 @@
 //                     IMPORTS
 ////////////////////////////////////////////////////////
 import AppError from '../utils/AppError.js';
-import { quetrefy } from '../utils/urlModifiers.js';
 import fetcher from './fetcher.js';
+import { basename } from '../utils/misc.js'
 
 ////////////////////////////////////////////////////////
 //                     FUNCTION
 ////////////////////////////////////////////////////////
-
-const KEYWORD = 'topic';
-
-const getTopic = async (slug, lang) => {
+const getTopic = async slug => {
   // getting data and destructuring it in case it exists, else throwing an error
-  const res = await fetcher(`topic/${slug}`, { keyword: KEYWORD, lang });
+  const res = await fetcher(`topic/${slug}`);
 
   const {
-    data: { [KEYWORD]: rawData },
+    data: { topic: rawData },
   } = JSON.parse(res);
 
   if (!rawData)
@@ -25,35 +22,36 @@ const getTopic = async (slug, lang) => {
       404
     );
 
-const data = {
-  tid: rawData.tid,
-  name: rawData.name,
-  url: quetrefy(rawData.url),
-  image: rawData.photoUrl,
-  aliases: rawData.aliases,
-  numFollowers: rawData.numFollowers,
-  // isLocked: rawData.isLocked,
-  isAdult: rawData.adult,
-  mostViewedAuthors: rawData.mostViewedAuthors.map(author => ({
-    uid: author.user.uid,
-    name: `${author.user.names[0].givenName} ${author.user.names[0].familyName}`,
-    profile: quetrefy(author.user.profileUrl),
-    image: author.user.profileImageUrl,
-    isAnon: author.user.isAnon,
-    isVerified: author.user.isVerified,
-    numFollowers: author.user.followerCount,
-    numViews: author.numViews,
-    numAnswers: author.numPublicMostViewedAnswers,
-    credential: author.user.bestCredential?.translatedString,
-  })),
-  relatedTopics: rawData.relatedTopics.map(topic => ({
-    tid: topic.tid,
-    name: topic.name,
-    url: quetrefy(topic.url),
-    image: topic.photoUrl,
-    numFollowers: topic.numFollowers,
-  })),
-};
+  const data = {
+    tid: rawData.tid,
+    name: rawData.name,
+    url: rawData.url,
+    image: rawData.photoUrl,
+    aliases: rawData.aliases,
+    numFollowers: rawData.numFollowers,
+    numQuestions: rawData.numQuestions,
+    // isLocked: rawData.isLocked,
+    isAdult: rawData.adult,
+    mostViewedAuthors: rawData.mostViewedAuthors.map(author => ({
+      uid: author.user.uid,
+      name: `${author.user.names[0].givenName} ${author.user.names[0].familyName}`,
+      profile: author.user.profileUrl,
+      image: author.user.profileImageUrl,
+      isAnon: author.user.isAnon,
+      isVerified: author.user.isVerified,
+      numFollowers: author.user.followerCount,
+      numViews: author.numViews,
+      numAnswers: author.numPublicMostViewedAnswers,
+      credential: author.user.bestCredential?.translatedString,
+    })),
+    relatedTopics: rawData.relatedTopics.map(topic => ({
+      tid: topic.tid,
+      name: topic.name,
+      url: topic.url,
+      image: topic.photoUrl,
+      numFollowers: topic.numFollowers,
+    })),
+  };
 
   return data;
 };
@@ -62,3 +60,7 @@ const data = {
 //                     EXPORTS
 ////////////////////////////////////////////////////////
 export default getTopic;
+
+if (process.argv.length == 3 && basename(process.argv[1]) == 'getTopic.js') {
+  console.log(await getTopic(process.argv[2]))
+}
