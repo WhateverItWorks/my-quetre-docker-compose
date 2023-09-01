@@ -2,7 +2,9 @@ version: '3.7'
 
 services:
   quetre:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: quetre
     hostname: quetre
     restart: always
