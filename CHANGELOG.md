@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [7.0.1] (2023-08-31)
+
+* **feat:** mark unanswered (related) questions
+* **feat:** developer helpers
+
 ## [7.0.0](https://github.com/zyachel/quetre/compare/v6.0.0...v7.0.0) (2023-04-23)
 
 
