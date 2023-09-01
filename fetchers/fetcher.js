@@ -3,55 +3,46 @@
 //                      IMPORTS
 ////////////////////////////////////////////////////////
 import * as cheerio from 'cheerio';
-import getAxiosInstance from '../utils/getAxiosInstance.js';
+import axiosInstance from '../utils/axiosInstance.js';
 import AppError from '../utils/AppError.js';
+import { basename } from '../utils/misc.js'
 
 ////////////////////////////////////////////////////////
 //                     FUNCTION
 ////////////////////////////////////////////////////////
 /**
- * makes a call to quora.com(with the resourceStr appended) and returns parsed JSON containing the data about the resource requested.
+ *
  * @param {string} resourceStr a string after the baseURL
- * @param {{keyword: string, lang?: string, toEncode?: boolean}} options additional options
  * @returns JSON containing the result
+ * @description makes a call to quora.com(with the resourceStr appended) and returns parsed JSON containing the data about the resource requested.
  * @example await fetcher('What-is-free-and-open-software'); // will return object containing answers
  * await fetcher('topic/Space-Physics'); // will return 'space physics' topic object
  * await fetcher('profile/Charlie-Cheever'); // will return object containing information about charlie cheever
  */
-const fetcher = async (
-  resourceStr,
-  { keyword, lang, toEncode = true }
-) => {
+const fetcher = async resourceStr => {
   try {
-    // as url might contain unescaped chars. so, encoding it right away
-    const str = toEncode ? encodeURIComponent(resourceStr) : resourceStr;
-    const axiosInstance = getAxiosInstance(lang);
-    const res = await axiosInstance.get(str);
-    
+    // as url might contain unescaped chars. so, encodeing it right away
+    const res = await axiosInstance.get(encodeURIComponent(resourceStr));
+
     const $ = cheerio.load(res.data);
 
-    const regex = new RegExp(`"{\\\\"data\\\\":\\{\\\\"${keyword}.*\\}"`); // equivalent to /"\{\\"data\\":\{\\"searchConnection.*\}"/
+    // this logic is prone to breakage as Quora changes position of the script that includes answers.
+    // Cur position: 4th from bottom.
+    const rawData = $('body script:nth-last-child(4)')
+      .html()
+      ?.match(/"\{.*\}"/m)?.[0];
 
-    let rawData;
-    $('body script').each((i, el) => {
-      const extractedVal = $(el).html().match(regex)?.[0];
+    if (!rawData || !Object.entries(rawData).length)
+      throw new AppError("couldn't retrieve data", 500);
 
-      if (extractedVal) {
-        rawData = extractedVal;
-        return false; // breaks loop
-      }
-      return true;
-    });
+    const data = JSON.parse(rawData);
 
-    if (!rawData) throw new AppError("couldn't retrieve data", 500);
-
-    return JSON.parse(rawData);
+    return data;
   } catch (err) {
-    const statusCode = err.response?.status;
-    if (statusCode === 404) throw new AppError('Not found', 404);
-    else if (statusCode === 429 || statusCode === 403)
+    if (err.response?.status === 404) throw new AppError('Not found', 404);
+    else if (err.response?.status === 429)
       throw new AppError(
-        'Quora is rate limiting this instance. Try another or host your own.',
+        'Quora is rate limiting this instance. Consider hosting your own. Instructions are at Github',
         503
       );
     else throw err;
@@ -62,3 +53,7 @@ const fetcher = async (
 //                     EXPORTS
 ////////////////////////////////////////////////////////
 export default fetcher;
+
+if (process.argv.length == 3 && basename(process.argv[1]) == 'fetcher.js') {
+  console.log(await fetcher(process.argv[2]))
+}
