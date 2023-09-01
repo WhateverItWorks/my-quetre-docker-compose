@@ -1,6 +1,6 @@
 {
   "name": "quetre",
-  "version": "7.0.0",
+  "version": "7.0.1",
   "description": "a libre front-end for Quora",
   "private": true,
   "type": "module",
@@ -16,17 +16,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zyachel/quetre.git"
+    "url": "https://github.com/WhateverItWorks/quetre-reworked.git"
   },
   "keywords": [
     "front-end"
   ],
-  "author": "zyachel",
+  "author": "WhateverItWorks",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/zyachel/quetre/issues"
+    "url": "https://github.com/WhateverItWorks/quetre-reworked/issues"
   },
-  "homepage": "https://github.com/zyachel/quetre#readme",
+  "homepage": "https://github.com/WhateverItWorks/quetre-reworked",
   "dependencies": {
     "axios": "^1.5.0",
     "cheerio": "1.0.0-rc.12",
