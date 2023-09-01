@@ -4,7 +4,6 @@
 extends ../base
 include ../mixins/_formatText
 include ../mixins/_answer
-include ../mixins/_utils
 
 //-//////////////////////////////////////////////////////
 //-                   MAIN CONTENT
@@ -19,7 +18,7 @@ block content
       .answers__metadata
         p.answers__answers-total= `${ data.numAnswers ? 'Total answers: ' + data.numAnswers : 'Unanswered'}`
         p.answers__answers-shown Viewable answers: #{data.answers.length}
-        +quorafyUrl(meta.url)(class='answers__question-link answers__link')
+        a.answers__question-link.answers__link(href='https://www.quora.com' + data.question.url) View on Quora
 
     //- ANSWERS TO THIS QUESTION
     .answers-box.answers__answers-box
@@ -41,4 +40,4 @@ block content
       ul.related__questions 
         each question in data.relatedQuestions
           li.related__question-item: a.related__question-link.answers__link(href=question.url)
-            +spansChecker(question.text[0].spans)
+            +spansChecker([{text: question.url.slice(0, 12) == '/unanswered/' ? "[Unanswered] " : " ", modifiers: {highlight: true}}, ...question.text[0].spans])
